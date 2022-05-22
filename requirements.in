@@ -6,3 +6,4 @@ mypy==0.950
 pyinstaller==5.1
 pip-tools==6.6.1
 PyYAML==6.0
+types-PyYAML==6.0.7

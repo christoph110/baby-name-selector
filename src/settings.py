@@ -1,21 +1,54 @@
 import sys
 import os
-import yaml
-from interface import NameSelector
 import tkinter.messagebox as msgbox
+import yaml
 
 
 if getattr(sys, 'frozen', False):
     basedir = os.path.dirname(sys.executable)
+    appbasedir = sys._MEIPASS  # type:ignore # pylint:disable=protected-access
 else:
     basedir = os.path.dirname(os.path.abspath(__file__))
+    appbasedir = basedir
 
 SETTINGS_PATH = os.path.join(basedir, "settings.yaml")
+ICON_PATH = os.path.join(appbasedir, "peanut.ico")
+RESULTS_DIR = os.path.join(basedir, "results")
 
 
-with open(SETTINGS_PATH, "r") as file:
-    try:
-        settings = yaml.safe_load(file)
-    except yaml.YAMLError as err:
-        msgbox.showinfo(title='ERROR', message=err)
+class UserSettings:
+    # user settings
+    user1: dict
+    user2: dict
+    results_file: str
+    namefiles_dir = os.path.join(basedir, "name_lists")
 
+    @classmethod
+    def load(cls) -> None:
+        try:
+            with open(SETTINGS_PATH, "r", encoding="utf8") as file:
+                try:
+                    settings_dict = yaml.safe_load(file)
+                    cls.settings_parser(settings_dict)
+                except yaml.YAMLError as err:
+                    cls.error_msg(
+                        msg=(f"Error while loading settings{err.args[1]}\n"
+                             + err.args[2]))
+                    raise yaml.YAMLError from err
+
+        except FileNotFoundError as err:
+            cls.error_msg(msg=(f"Error while trying to load {SETTINGS_PATH}\n"
+                               + err.args[1]))
+            raise FileNotFoundError from err
+
+    @classmethod
+    def settings_parser(cls, settings_dict: dict) -> None:
+        cls.user1 = settings_dict["user_1"]
+        cls.user2 = settings_dict["user_2"]
+        cls.results_file = os.path.join(RESULTS_DIR,
+                                        settings_dict["results_file"])
+
+    @staticmethod
+    def error_msg(msg: str) -> None:
+        msgbox.showerror(title='ERROR',
+                         message=msg)

@@ -98,7 +98,3 @@ f;Amara
 f;Piper
 f;Quinn
 f;Jade
-m;hhhh
-f;asdasdas
-m;aas
-f; aaaaaa

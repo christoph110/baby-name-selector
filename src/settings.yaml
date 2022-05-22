@@ -9,4 +9,5 @@ user_2:
   yes_button: "1"
   no_button: "3"
 
+# TODO
 results_file: db.csv
