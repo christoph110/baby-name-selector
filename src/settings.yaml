@@ -1,0 +1,12 @@
+# Users
+user_1:
+  name: "Anissa"
+  yes_button: "y"
+  no_button: "c"
+
+user_2:
+  name: "Christoph"
+  yes_button: "1"
+  no_button: "3"
+
+results_file: db.csv
