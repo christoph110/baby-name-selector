@@ -1,7 +1,7 @@
 
 import tkinter as tk
 import tkinter.messagebox as msgbox
-from tkinter import ttk
+from tkinter import BOTH, ttk
 import sys
 from functions import add_result_to_db
 import settings
@@ -57,6 +57,7 @@ class NameSelector:
         # set the position of the window to the center of the screen
         self.root.geometry(f"{window_width}x{window_height}"
                            f"+{center_x}+{center_y}")
+        self.root.minsize(window_width, window_height)
         self.root.bind("<KeyPress>", self.keydown)
         self.root.iconbitmap(settings.ICON_PATH)
 
@@ -70,13 +71,24 @@ class NameSelector:
         self.set_sexlabel(nameframe)
         nameframe.pack(side=tk.TOP, expand=True)
 
-        userframe = ttk.Frame(self.root)
-        self.set_usernames(userframe)
-        userframe.pack(side=tk.TOP)
+        # userframe = ttk.Frame(self.root)
+        # self.set_usernames(userframe)
+        # userframe.pack(side=tk.TOP, fill=BOTH)
 
-        buttonframe = ttk.Frame(self.root)
-        self.set_buttons(buttonframe)
-        buttonframe.pack(side=tk.TOP)
+        # buttonframe = ttk.Frame(self.root)
+        # self.set_buttons(buttonframe)
+        # buttonframe.pack(side=tk.TOP, fill=BOTH)
+
+        user1frame = ttk.Frame(self.root)
+        self.user1label, self.button1yes, self.button1no = \
+            self.set_usernames(user1frame, UserSettings.user1["name"])
+        user1frame.pack(side=tk.LEFT, anchor="sw", fill=BOTH, expand=True)
+
+        if UserSettings.two_users:
+            user2frame = ttk.Frame(self.root)
+            self.user2label, self.button2yes, self.button2no = \
+                self.set_usernames(user2frame, UserSettings.user2["name"])
+            user2frame.pack(side=tk.LEFT, anchor="se", fill=BOTH, expand=True)
 
     def set_counterlabel(self, counterframe: ttk.Frame) -> None:
         self.counter_label = tk.Label(counterframe,
@@ -92,69 +104,36 @@ class NameSelector:
         self.sex_label = tk.Label(nameframe, font=("Helvetica", 10))
         self.sex_label.pack(ipadx=10, anchor="center",)
 
-    def set_usernames(self, userframe: ttk.Frame):
-        self.user1label = tk.Label(
-            userframe, text=f"{UserSettings.user1['name']}")
-        self.user1label.pack(ipadx=10,
-                             padx=(5, 120),
-                             anchor="center",
-                             side=tk.LEFT,
-                             expand=True)
-        self.user2label = tk.Label(
-            userframe, text=f"{UserSettings.user2['name']}")
-        self.user2label.pack(ipadx=10,
-                             padx=(120, 5),
-                             anchor="center",
-                             side=tk.RIGHT,
-                             expand=True)
-
-    def set_buttons(self, buttonframe: ttk.Frame):
+    def set_usernames(self, userframe: ttk.Frame, username: str):
+        userlabel = tk.Label(
+            userframe, text=f"{username}")
+        userlabel.pack(padx=32, side=tk.TOP, expand=True, fill="x")
         xsize = 40
         ysize = 15
-        self.button1yes = tk.Button(
-            buttonframe,
+        buttonyes = tk.Button(
+            userframe,
             text=f"Yes\n({UserSettings.user1['yes_button']})",
             state=tk.DISABLED)
-        self.button1yes.pack(ipadx=xsize,
-                             ipady=ysize,
-                             padx=(20, 5),
-                             pady=20,
-                             anchor="sw",
-                             side=tk.LEFT,
-                             expand=True)
-        self.button1no = tk.Button(
-            buttonframe,
+        buttonyes.pack(ipadx=xsize,
+                       ipady=ysize,
+                       padx=10,
+                       pady=20,
+                       anchor="se",
+                       side=tk.LEFT,
+                       expand=True)
+        buttonno = tk.Button(
+            userframe,
             text=f"No\n({UserSettings.user1['no_button']})",
             state=tk.DISABLED)
-        self.button1no.pack(ipadx=xsize,
-                            ipady=ysize,
-                            padx=(5, 50),
-                            pady=20,
-                            anchor="sw",
-                            side=tk.LEFT,
-                            expand=True)
-        self.button2yes = tk.Button(
-            buttonframe,
-            text=f"Yes\n({UserSettings.user2['yes_button']})",
-            state=tk.DISABLED)
-        self.button2yes.pack(ipadx=xsize,
-                             ipady=ysize,
-                             padx=(50, 5),
-                             pady=20,
-                             anchor="se",
-                             side=tk.LEFT,
-                             expand=True)
-        self.button2no = tk.Button(
-            buttonframe,
-            text=f"No\n({UserSettings.user2['no_button']})",
-            state=tk.DISABLED)
-        self.button2no.pack(ipadx=xsize,
-                            ipady=ysize,
-                            padx=(5, 20),
-                            pady=20,
-                            anchor="se",
-                            side=tk.LEFT,
-                            expand=True)
+        buttonno.pack(ipadx=xsize,
+                      ipady=ysize,
+                      padx=10,
+                      pady=20,
+                      anchor="sw",
+                      side=tk.LEFT,
+                      expand=True)
+
+        return userlabel, buttonyes, buttonno
 
     def run(self, name_list: list[str]) -> None:
         # name list
@@ -176,7 +155,8 @@ class NameSelector:
                     print("valid user input: " + event.char)
                     self.name_item["user1_response"] = "no"
                     self.check_user_input()
-                self.user1label.config(bg="snow1")
+                if UserSettings.two_users:
+                    self.user1label.config(bg="snow1")
             else:
                 print(f"Invalid input {event.char}. "
                       f"User1 already locked in with "
@@ -184,37 +164,40 @@ class NameSelector:
 
         elif (event.char in (UserSettings.user2['yes_button'],
                              UserSettings.user2['no_button'])):
-            if not self.name_item["user2_response"]:
-                if event.char == UserSettings.user2['yes_button']:
-                    print("valid user input: " + event.char)
-                    self.name_item["user2_response"] = "yes"
-                    self.check_user_input()
-                elif event.char == UserSettings.user2['no_button']:
-                    print("valid user input: " + event.char)
-                    self.name_item["user2_response"] = "no"
-                    self.check_user_input()
-                self.user2label.config(bg="snow1")
-            else:
-                print(f"Invalid input {event.char}. "
-                      f"User2 already locked in with "
-                      f"'{self.name_item['user2_response']}'.")
+            if UserSettings.two_users:
+                if not self.name_item["user2_response"]:
+                    if event.char == UserSettings.user2['yes_button']:
+                        print("valid user input: " + event.char)
+                        self.name_item["user2_response"] = "yes"
+                        self.check_user_input()
+                    elif event.char == UserSettings.user2['no_button']:
+                        print("valid user input: " + event.char)
+                        self.name_item["user2_response"] = "no"
+                        self.check_user_input()
+                    self.user2label.config(bg="snow1")
+                else:
+                    print(f"Invalid input {event.char}. "
+                          f"User2 already locked in with "
+                          f"'{self.name_item['user2_response']}'.")
 
         else:
             print("INVALID user input: " + event.char)
 
     def check_user_input(self):
         if (self.name_item['user1_response']
-                and self.name_item['user2_response']):
+                and (self.name_item['user2_response']
+                     or not UserSettings.two_users)):
             if self.name_item['user1_response'] == "yes":
                 self.button1yes.config(background='pale green')
             elif self.name_item['user1_response'] == "no":
                 self.button1no.config(background='OrangeRed1')
-            if self.name_item['user2_response'] == "yes":
-                self.button2yes.config(background='pale green')
-            elif self.name_item['user2_response'] == "no":
-                self.button2no.config(background='OrangeRed1')
+            if UserSettings.two_users:
+                if self.name_item['user2_response'] == "yes":
+                    self.button2yes.config(background='pale green')
+                elif self.name_item['user2_response'] == "no":
+                    self.button2no.config(background='OrangeRed1')
 
-            self.button2no.after(1500, self.next_name)
+            self.button1no.after(1500, self.next_name)
 
     def next_name(self):
         self.write_to_db()
@@ -253,10 +236,11 @@ class NameSelector:
 
     def reset_buttons(self) -> None:
         self.name_item['user1_response'] = ""
-        self.name_item['user2_response'] = ""
         self.user1label.config(bg="SystemButtonFace")
-        self.user2label.config(bg="SystemButtonFace")
         self.button1yes.config(bg='SystemButtonFace')
         self.button1no.config(bg='SystemButtonFace')
-        self.button2yes.config(bg='SystemButtonFace')
-        self.button2no.config(bg='SystemButtonFace')
+        if UserSettings.two_users:
+            self.name_item['user2_response'] = ""
+            self.user2label.config(bg="SystemButtonFace")
+            self.button2yes.config(bg='SystemButtonFace')
+            self.button2no.config(bg='SystemButtonFace')

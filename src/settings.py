@@ -20,6 +20,7 @@ class UserSettings:
     # user settings
     user1: dict
     user2: dict
+    two_users: bool
     results_file: str
     namefiles_dir = os.path.join(basedir, "name_lists")
 
@@ -45,6 +46,7 @@ class UserSettings:
     def settings_parser(cls, settings_dict: dict) -> None:
         cls.user1 = settings_dict["user_1"]
         cls.user2 = settings_dict["user_2"]
+        cls.two_users = bool(cls.user2["name"])
         cls.results_file = os.path.join(RESULTS_DIR,
                                         settings_dict["results_file"])
 

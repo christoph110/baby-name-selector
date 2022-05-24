@@ -1,7 +1,7 @@
 import os
 import random
-import pandas as pd
 import tkinter.messagebox as msgbox
+import pandas as pd
 from pandas.errors import ParserError
 from settings import UserSettings
 
@@ -13,8 +13,10 @@ def load_db() -> dict:
         key = f"{row.name};{row.sex}"
         result_dict[key] = {
             "user1_response": getattr(row, UserSettings.user1["name"]),
-            "user2_response": getattr(row, UserSettings.user2["name"]),
         }
+        if UserSettings.two_users:
+            result_dict[key]["user2_response"] = getattr(
+                row, UserSettings.user2["name"])
     return result_dict
 
 
@@ -78,9 +80,11 @@ def add_result_to_db(name_item: dict) -> None:
         data = ";".join([
             name_item['name'],
             name_item['sex'],
-            name_item['user1_response'],
-            name_item['user2_response']
-        ]) + "\n"
+            name_item['user1_response']
+        ])
+        if UserSettings.two_users:
+            data += f";{name_item['user2_response']}"
+        data += "\n"
         file.write(data)
 
 
@@ -109,10 +113,9 @@ def initialize_results_file() -> None:
 def validate_results_file(results_df: pd.DataFrame) -> None:
     results_path = UserSettings.results_file
     file_columns = results_df.columns
-    result_columns = ["name",
-                      "sex",
-                      UserSettings.user1["name"],
-                      UserSettings.user2["name"]]
+    result_columns = ["name", "sex", UserSettings.user1["name"]]
+    if UserSettings.two_users:
+        result_columns.append(UserSettings.user2["name"])
     if set(file_columns) != set(result_columns):
         raise_validation_error(
             title="Corrupt results file",
@@ -143,7 +146,7 @@ def raise_validation_error(title: str, msg: str) -> None:
 
 def create_results_file() -> None:
     with open(UserSettings.results_file, "w", encoding="utf8") as file:
-        file.write(";".join(["name",
-                             "sex",
-                             UserSettings.user1['name'],
-                             UserSettings.user2['name']]))
+        file.write(";".join(["name", "sex", UserSettings.user1['name']]))
+        if UserSettings.two_users:
+            file.write(f";{UserSettings.user2['name']}")
+        file.write("\n")

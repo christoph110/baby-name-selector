@@ -5,7 +5,7 @@ user_1:
   no_button: "c"
 
 user_2:
-  name: "Christoph"
+  name: "Christoph"  # leave empty for a single user
   yes_button: "1"
   no_button: "3"
 
