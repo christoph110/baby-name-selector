@@ -1,5 +1,5 @@
 from settings import UserSettings
-from functions import (initialize_results_file,
+from functions import (initialize_files,
                        get_new_name_list,
                        randomize_list)
 from interface import NameSelector
@@ -7,7 +7,7 @@ from interface import NameSelector
 
 name_selector = NameSelector()
 UserSettings.load()
-initialize_results_file()
+initialize_files()
 new_names_list = get_new_name_list()
 randomize_list(new_names_list)
 name_selector.set_frames()

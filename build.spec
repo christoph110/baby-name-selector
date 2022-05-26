@@ -28,7 +28,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='Baby name selector',
+    name='Name-selector',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

@@ -4,6 +4,7 @@ import tkinter.messagebox as msgbox
 import pandas as pd
 from pandas.errors import ParserError
 from settings import UserSettings
+import settings
 
 
 def load_db() -> dict:
@@ -21,7 +22,7 @@ def load_db() -> dict:
 
 
 def load_names() -> pd.DataFrame:
-    dirname = UserSettings.namefiles_dir
+    dirname = settings.NAMEFILES_DIR
     names_df = pd.DataFrame()
     for filename in os.listdir(dirname):
         filepath = os.path.join(dirname, filename)
@@ -88,7 +89,8 @@ def add_result_to_db(name_item: dict) -> None:
         file.write(data)
 
 
-def initialize_results_file() -> None:
+def initialize_files() -> None:
+    create_dirs()
     results_path = UserSettings.results_file
     # Create file if it does not exist
     if not os.path.isfile(results_path):
@@ -108,6 +110,23 @@ def initialize_results_file() -> None:
     except ParserError as err:
         raise ParserError(err.args[0] + f" in {results_path}") from err
     validate_results_file(results_df)
+
+
+def create_dirs():
+    if not os.path.isdir(settings.RESULTS_DIR):
+        os.mkdir(settings.RESULTS_DIR)
+    if not os.path.isdir(settings.NAMEFILES_DIR):
+        os.mkdir(settings.NAMEFILES_DIR)
+        msg = ("It seems that you are running the Name Selector for "
+               "the first time. To get started, just drop some files "
+               "with names into the following folder:\n\n"
+               f"{settings.NAMEFILES_DIR}\n\n"
+               "Restart the application and you are ready to go.\n\n"
+               "Have fun! :)")
+        msgbox.showinfo(
+            title="Welcome",
+            message=msg)
+        raise AssertionError(msg)
 
 
 def validate_results_file(results_df: pd.DataFrame) -> None:

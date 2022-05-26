@@ -14,6 +14,7 @@ else:
 SETTINGS_PATH = os.path.join(basedir, "settings.yaml")
 ICON_PATH = os.path.join(appbasedir, "peanut.ico")
 RESULTS_DIR = os.path.join(basedir, "results")
+NAMEFILES_DIR = os.path.join(basedir, "name_lists")
 
 
 class UserSettings:
@@ -22,7 +23,6 @@ class UserSettings:
     user2: dict
     two_users: bool
     results_file: str
-    namefiles_dir = os.path.join(basedir, "name_lists")
 
     @classmethod
     def load(cls) -> None:
