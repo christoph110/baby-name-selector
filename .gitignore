@@ -2,3 +2,7 @@
 __pycache__/
 build/
 dist/
+
+# files/folders created by the script
+src/name_lists/
+src/results/

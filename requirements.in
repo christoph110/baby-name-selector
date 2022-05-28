@@ -2,5 +2,8 @@ pandas==1.4.2
 tk==0.1.0
 flake8==4.0.1
 pylint==2.13.9
+mypy==0.950
 pyinstaller==5.1
 pip-tools==6.6.1
+PyYAML==6.0
+types-PyYAML==6.0.7

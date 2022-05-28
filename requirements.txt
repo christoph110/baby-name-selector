@@ -28,6 +28,10 @@ mccabe==0.6.1
     # via
     #   flake8
     #   pylint
+mypy==0.950
+    # via -r requirements.in
+mypy-extensions==0.4.3
+    # via mypy
 numpy==1.22.4
     # via pandas
 pandas==1.4.2
@@ -56,17 +60,23 @@ pytz==2022.1
     # via pandas
 pywin32-ctypes==0.2.0
     # via pyinstaller
+pyyaml==6.0
+    # via -r requirements.in
 six==1.16.0
     # via python-dateutil
 tk==0.1.0
     # via -r requirements.in
 tomli==2.0.1
     # via
+    #   mypy
     #   pep517
     #   pylint
+types-pyyaml==6.0.7
+    # via -r requirements.in
 typing-extensions==4.2.0
     # via
     #   astroid
+    #   mypy
     #   pylint
 wheel==0.37.1
     # via pip-tools
