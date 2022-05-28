@@ -1,4 +1,4 @@
-
+"""module for the user interface"""
 import tkinter as tk
 import tkinter.messagebox as msgbox
 from tkinter import BOTH, ttk
@@ -9,7 +9,7 @@ from settings import UserSettings
 
 
 class NameSelector:
-
+    """class of the Name Selector user interface"""
     def __init__(self) -> None:
         # name list
         self.name_list: list[str]
@@ -30,6 +30,7 @@ class NameSelector:
         self.set_window()
 
     def set_new_name(self, name_list: list[str], index: int) -> dict:
+        """sets the next name for the user interface"""
         try:
             name, sex = name_list[index].split(';')
             name_item = {
@@ -45,6 +46,7 @@ class NameSelector:
             sys.exit()
 
     def set_window(self):
+        """initializes the user interface main window"""
         self.root.title('Name Selector')
         window_width = 600
         window_height = 400
@@ -62,6 +64,7 @@ class NameSelector:
         self.root.iconbitmap(settings.ICON_PATH)
 
     def set_frames(self):
+        """initializes the different frames in the main window"""
         counterframe = ttk.Frame(self.root)
         self.set_counterlabel(counterframe)
         counterframe.pack(side=tk.TOP, anchor='ne')
@@ -83,20 +86,24 @@ class NameSelector:
             user2frame.pack(side=tk.LEFT, anchor='se', fill=BOTH, expand=True)
 
     def set_counterlabel(self, counterframe: ttk.Frame) -> None:
+        """initializes the remaining names counter in the main window"""
         self.counter_label = tk.Label(counterframe,
                                       font=('Helvetica', 10),
                                       fg='snow4')
         self.counter_label.pack(ipadx=15, ipady=10)
 
     def set_namelabel(self, nameframe: ttk.Frame) -> None:
+        """initializes the displayed name widget for the selection"""
         self.name_label = tk.Label(nameframe, font=('Helvetica', 40))
         self.name_label.pack(ipadx=10, ipady=10, anchor='center',)
 
     def set_sexlabel(self, nameframe: ttk.Frame):
+        """initializes the sex label below the name"""
         self.sex_label = tk.Label(nameframe, font=('Helvetica', 10))
         self.sex_label.pack(ipadx=10, anchor='center',)
 
     def set_usernames(self, nameframe: ttk.Frame, user: dict):
+        """initializes the user name(s) labels"""
         userlabel = tk.Label(
             nameframe, text=f'{user["name"]}')
         userlabel.pack(padx=32, side=tk.TOP, expand=True, fill='x')
@@ -130,7 +137,7 @@ class NameSelector:
         return userlabel, buttonyes, buttonno
 
     def run(self, name_list: list[str]) -> None:
-        # name list
+        """start the main window"""
         self.name_list = name_list
         self.index = 0
         self.name_item = self.set_new_name(self.name_list, self.index)
@@ -138,6 +145,7 @@ class NameSelector:
         self.root.mainloop()
 
     def keydown(self, event):
+        """event handler for keyboard interaction"""
         if event.char in (UserSettings.user1['yes_button'],
                           UserSettings.user1['no_button']):
             if not self.name_item['user1_response']:
@@ -178,6 +186,7 @@ class NameSelector:
             print('INVALID user input: ' + event.char)
 
     def check_user_input(self):
+        """validates the user input for different choices"""
         if (self.name_item['user1_response']
                 and (self.name_item['user2_response']
                      or not UserSettings.two_users)):
@@ -194,6 +203,7 @@ class NameSelector:
             self.button1no.after(1500, self.next_name)
 
     def next_name(self):
+        """continues with the next name after a selection happened"""
         self.write_to_db()
         self.reset_buttons()
         # next name
@@ -203,6 +213,7 @@ class NameSelector:
         self.update_counter_label()
 
     def write_to_db(self) -> None:
+        """saves the selection result in the results file"""
         try:
             add_result_to_db(self.name_item)
         except PermissionError as err:
@@ -216,19 +227,23 @@ class NameSelector:
             sys.exit()
 
     def update_window(self) -> None:
+        """resets the window elements to the start appearance"""
         self.update_counter_label()
         self.update_name_label()
         self.reset_buttons()
 
     def update_counter_label(self) -> None:
+        """updates the counter of remaining names"""
         self.counter_label.config(
             text=f'{len(self.name_list) - self.index}')
 
     def update_name_label(self) -> None:
+        """updates the name label of the name selection"""
         self.name_label.config(text=self.name_item['name'])
         self.sex_label.config(text=f"({self.name_item['sex']})")
 
     def reset_buttons(self) -> None:
+        """resets button to the default state"""
         self.name_item['user1_response'] = ''
         self.user1label.config(bg='SystemButtonFace')
         self.button1yes.config(bg='SystemButtonFace')

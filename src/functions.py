@@ -1,3 +1,4 @@
+"""module with backend functionalities"""
 import os
 import random
 import tkinter.messagebox as msgbox
@@ -8,6 +9,7 @@ import settings
 
 
 def load_db() -> dict:
+    """loads the file where the selection results are stored"""
     result = pd.DataFrame(pd.read_csv(UserSettings.results_file, sep=";"))
     result_dict = {}
     for row in result.itertuples():
@@ -22,6 +24,7 @@ def load_db() -> dict:
 
 
 def load_names() -> pd.DataFrame:
+    """loads all names from all files in the names-files directory"""
     dirname = settings.NAMEFILES_DIR
     names_df = pd.DataFrame()
     for filename in os.listdir(dirname):
@@ -37,6 +40,10 @@ def load_names() -> pd.DataFrame:
 
 
 def file_to_df(filepath: str) -> pd.DataFrame:
+    """
+    loads a file with a list of sex;name and returns a dataframe
+    after validating the file for the correct format
+    """
     try:
         file_df = pd.DataFrame(pd.read_csv(filepath, sep=";",
                                            names=['sex', 'name'],
@@ -60,6 +67,10 @@ def file_to_df(filepath: str) -> pd.DataFrame:
 
 
 def get_new_name_list() -> list[str]:
+    """
+    returns a list of names (sex;name) that are not
+    present in the results yet
+    """
     results: dict = load_db()
     names: pd.DataFrame = load_names()
     new_names_list = []
@@ -71,12 +82,14 @@ def get_new_name_list() -> list[str]:
 
 
 def randomize_list(my_list: list) -> None:
+    """shuffles a list (inplace)"""
     seed = 0
     random.seed(seed)
     random.shuffle(my_list)
 
 
 def add_result_to_db(name_item: dict) -> None:
+    """add a new result row to the results file"""
     with open(UserSettings.results_file, "a", encoding="utf8") as file:
         data = ";".join([
             name_item['name'],
@@ -90,6 +103,7 @@ def add_result_to_db(name_item: dict) -> None:
 
 
 def initialize_files() -> None:
+    """creates files/folders and validates present files"""
     create_dirs()
     results_path = UserSettings.results_file
     # Create file if it does not exist
@@ -113,6 +127,7 @@ def initialize_files() -> None:
 
 
 def create_dirs():
+    """creates necessary dictionaries"""
     if not os.path.isdir(settings.RESULTS_DIR):
         os.mkdir(settings.RESULTS_DIR)
     if not os.path.isdir(settings.NAMEFILES_DIR):
@@ -130,6 +145,7 @@ def create_dirs():
 
 
 def validate_results_file(results_df: pd.DataFrame) -> None:
+    """validates the results file for the correct format"""
     results_path = UserSettings.results_file
     file_columns = results_df.columns
     result_columns = ["name", "sex", UserSettings.user1["name"]]
@@ -158,12 +174,14 @@ def validate_results_file(results_df: pd.DataFrame) -> None:
 
 
 def raise_validation_error(title: str, msg: str) -> None:
+    """shows a message box and raises an error"""
     msgbox.showerror(title=title,
                      message=msg)
     raise AssertionError(msg)
 
 
 def create_results_file() -> None:
+    """creates a new results file"""
     with open(UserSettings.results_file, "w", encoding="utf8") as file:
         file.write(";".join(["name", "sex", UserSettings.user1['name']]))
         if UserSettings.two_users:
