@@ -6,3 +6,6 @@ dist/
 # files/folders created by the script
 src/name_lists/
 src/results/
+
+# others
+releases/

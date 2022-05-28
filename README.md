@@ -4,7 +4,8 @@ Small application to make the selection of names (e.g. for babies, pets, etc.) m
 
 ## Description
 
-This program will make choosing names more interactive and fun. Instead of reading through endless lists of names in books etc, you can feed lists of names into the program which then shows you the names one by one and let you decide 'yes' or 'no'. The result is stored in a .csv file which you can then open in e.g. Excel or Numbers to filter for your preferred name selections.
+This program will make choosing names more interactive and fun. Instead of reading through endless lists of names in books etc, you can feed lists of names into the program which then shows you the names one by one and let you decide 'yes' or 'no'. You can do this on your own or together with another person.
+The result is stored in a .csv file which you can then open in e.g. Excel or Numbers to filter for your preferred name selections.
 
 ## Getting Started
 
