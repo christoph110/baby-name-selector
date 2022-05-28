@@ -4,5 +4,5 @@ build/
 dist/
 
 # files/folders created by the script
-scr/name_lists/
+src/name_lists/
 src/results/
