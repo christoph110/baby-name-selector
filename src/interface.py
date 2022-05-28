@@ -6,6 +6,7 @@ import sys
 from functions import add_result_to_db
 import settings
 from settings import UserSettings
+from utils import error_message
 
 
 class NameSelector:
@@ -217,14 +218,11 @@ class NameSelector:
         try:
             add_result_to_db(self.name_item)
         except PermissionError as err:
-            msgbox.showerror(
-                title='ERROR',
-                message=('Could not save to database.\n'
-                         + err.args[1]
-                         + "\n\nMaybe the 'db.csv' file is open in Excel?")
-                )
-            self.root.destroy()
-            sys.exit()
+            error_message(
+                title="PermissionError",
+                msg=('Could not save to database.\n'
+                     + err.args[1]
+                     + "\n\nMaybe the 'db.csv' file is open in Excel?"))
 
     def update_window(self) -> None:
         """resets the window elements to the start appearance"""

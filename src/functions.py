@@ -1,11 +1,13 @@
 """module with backend functionalities"""
 import os
+import sys
 import random
 import tkinter.messagebox as msgbox
 import pandas as pd
 from pandas.errors import ParserError
-from settings import UserSettings
 import settings
+from settings import UserSettings
+from utils import error_message
 
 
 def load_db() -> dict:
@@ -49,17 +51,18 @@ def file_to_df(filepath: str) -> pd.DataFrame:
                                            names=['sex', 'name'],
                                            dtype=str,
                                            keep_default_na=False))
-    except ParserError as err:
-        raise ParserError(err.args[0] + f" in {filepath}") from err
+    except (ParserError, PermissionError) as err:
+        error_message(title="ParserError",
+                      msg=err.args[0] + f" in {filepath}")
     # validation
     empty_rows = file_df[
         file_df.applymap(lambda x: x.strip() == "").any(axis=1)].index.values
     if len(empty_rows) > 0:
-        raise_validation_error(
+        error_message(
             title="Corrupt names list file",
             msg=f"empty values in rows {empty_rows + 1} in {filepath}")
     if not set(file_df.sex.unique()).issubset({"f", "m"}):
-        raise_validation_error(
+        error_message(
             title="Corrupt names list file",
             msg=f"'sex' has to be either 'm' or 'f' "
                 f"but was {set(file_df.sex.unique())} in {filepath}")
@@ -121,8 +124,9 @@ def initialize_files() -> None:
                                               header=0,
                                               dtype=str,
                                               keep_default_na=False))
-    except ParserError as err:
-        raise ParserError(err.args[0] + f" in {results_path}") from err
+    except (ParserError, PermissionError) as err:
+        error_message(title="ParserError",
+                      msg=err.args[0] + f" in {results_path}")
     validate_results_file(results_df)
 
 
@@ -139,10 +143,9 @@ def create_dirs():
                "(Look into the catalog folder for some examples)\n"
                "Restart the application and you are ready to go.\n\n"
                "Have fun! :)")
-        msgbox.showinfo(
-            title="Welcome",
-            message=msg)
-        raise AssertionError(msg)
+        msgbox.showinfo(title="Welcome",
+                        message=msg)
+        sys.exit()
 
 
 def validate_results_file(results_df: pd.DataFrame) -> None:
@@ -153,7 +156,7 @@ def validate_results_file(results_df: pd.DataFrame) -> None:
     if UserSettings.two_users:
         result_columns.append(UserSettings.user2["name"])
     if set(file_columns) != set(result_columns):
-        raise_validation_error(
+        error_message(
             title="Corrupt results file",
             msg=f"Incorrect column names in {results_path}\n"
                 f"Was expecting {result_columns} but was "
@@ -164,21 +167,14 @@ def validate_results_file(results_df: pd.DataFrame) -> None:
         results_df.applymap(lambda x: x.strip() == "").any(axis=1)
     ].index.values
     if len(empty_rows) > 0:
-        raise_validation_error(
+        error_message(
             title="Corrupt results file",
             msg=f"empty values in rows {empty_rows + 2} in {results_path}")
     if not set(results_df.sex.unique()).issubset({"f", "m"}):
-        raise_validation_error(
+        error_message(
             title="Corrupt results file",
             msg=f"'sex' has to be either 'm' or 'f' "
                 f"but was {set(results_df.sex.unique())} in {results_path}")
-
-
-def raise_validation_error(title: str, msg: str) -> None:
-    """shows a message box and raises an error"""
-    msgbox.showerror(title=title,
-                     message=msg)
-    raise AssertionError(msg)
 
 
 def create_results_file() -> None:
