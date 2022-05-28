@@ -136,6 +136,7 @@ def create_dirs():
                "the first time. To get started, just drop some files "
                "with names into the following folder:\n\n"
                f"{settings.NAMEFILES_DIR}\n\n"
+               "(Look into the catalog folder for some examples)\n"
                "Restart the application and you are ready to go.\n\n"
                "Have fun! :)")
         msgbox.showinfo(
