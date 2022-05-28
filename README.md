@@ -7,6 +7,9 @@ Small application to make the selection of names (e.g. for babies, pets, etc.) m
 This program will make choosing names more interactive and fun. Instead of reading through endless lists of names in books etc, you can feed lists of names into the program which then shows you the names one by one and let you decide 'yes' or 'no'. You can do this on your own or together with another person.
 The result is stored in a .csv file which you can then open in e.g. Excel or Numbers to filter for your preferred name selections.
 
+![screenshot](https://user-images.githubusercontent.com/59751309/170839400-1f575c20-bce4-4b5a-93ee-5b3d49100976.png)
+
+
 ## Getting Started
 
 ### Dependencies
