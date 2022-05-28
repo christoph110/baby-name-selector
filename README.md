@@ -15,7 +15,7 @@ The result is stored in a .csv file which you can then open in e.g. Excel or Num
 ### Dependencies
 
 Pre-compiled versions available for
-* Windows 10
+* [Windows 10](https://github.com/christoph110/name-selector/releases)
 
 For running the application as source code (see [below](#development-in-local-environment)):
 * Python 3.9 (or newer)
