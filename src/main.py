@@ -1,3 +1,7 @@
+"""
+Main module
+To be started directly via 'python main.py'
+"""
 from settings import UserSettings
 from functions import (initialize_files,
                        get_new_name_list,

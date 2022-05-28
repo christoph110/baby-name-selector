@@ -42,7 +42,11 @@ class NameSelector:
             }
             return name_item
         except IndexError:
-            msgbox.showinfo(title='Ende', message='No names left! :)')
+            msgbox.showinfo(
+                title='Ende',
+                message=('No new names left! :)\n\n'
+                         'You have already seen all the names in the from '
+                         'the name_lists folder. Maybe add some new ones?'))
             self.root.destroy()
             sys.exit()
 
@@ -112,7 +116,7 @@ class NameSelector:
         ysize = 15
         buttonyes = tk.Button(
             nameframe,
-            text=f"Yes\n({user['yes_button']})",
+            text=f'Yes\n({user["yes_button"]})',
             state=tk.DISABLED,
             relief='groove')
         buttonyes.pack(ipadx=xsize,
@@ -124,7 +128,7 @@ class NameSelector:
                        expand=True)
         buttonno = tk.Button(
             nameframe,
-            text=f"No\n({user['no_button']})",
+            text=f'No\n({user["no_button"]})',
             state=tk.DISABLED,
             relief='groove')
         buttonno.pack(ipadx=xsize,
@@ -219,10 +223,10 @@ class NameSelector:
             add_result_to_db(self.name_item)
         except PermissionError as err:
             error_message(
-                title="PermissionError",
-                msg=('Could not save to database.\n'
-                     + err.args[1]
-                     + "\n\nMaybe the 'db.csv' file is open in Excel?"))
+                title='PermissionError',
+                msg=('Could not save to the results file.\n'
+                     '\n\nMaybe the file is open in another program?\n'
+                     f'{err.args[1]} to access \n{UserSettings.results_file}'))
 
     def update_window(self) -> None:
         """resets the window elements to the start appearance"""
@@ -238,7 +242,7 @@ class NameSelector:
     def update_name_label(self) -> None:
         """updates the name label of the name selection"""
         self.name_label.config(text=self.name_item['name'])
-        self.sex_label.config(text=f"({self.name_item['sex']})")
+        self.sex_label.config(text=f'({self.name_item["sex"]})')
 
     def reset_buttons(self) -> None:
         """resets button to the default state"""
